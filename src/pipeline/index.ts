@@ -10,10 +10,7 @@ import {
   calculateBrandingOptionsDiff,
   applyBrandingOptions,
 } from "../apply/branding-options";
-import {
-  calculateNetworkDiff,
-  applyNetworkConfig,
-} from "../apply/network";
+import { calculateNetworkDiff, applyNetworkConfig } from "../apply/network";
 import {
   calculateNewUsersDiff,
   calculateUserPoliciesDiff,

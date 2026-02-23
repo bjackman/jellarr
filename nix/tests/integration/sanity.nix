@@ -18,6 +18,9 @@ pkgs.testers.runNixOSTest {
         loginDisclaimer = "Configured by <a href=\"https://github.com/venkyr77/jellarr\">Jellarr</a>";
         splashscreenEnabled = false;
       };
+      network = {
+        knownProxies = ["127.0.0.1" "10.0.0.1"];
+      };
       encoding = {
         allowAv1Encoding = false;
         allowHevcEncoding = false;

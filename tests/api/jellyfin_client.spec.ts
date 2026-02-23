@@ -593,9 +593,9 @@ describe("api/jf Network façade", () => {
     );
 
     // Assert
-    await expect(
-      jellyfinClient.updateNetworkConfiguration({}),
-    ).rejects.toThrow(/POST \/System\/Configuration\/network failed/i);
+    await expect(jellyfinClient.updateNetworkConfiguration({})).rejects.toThrow(
+      /POST \/System\/Configuration\/network failed/i,
+    );
   });
 });
 

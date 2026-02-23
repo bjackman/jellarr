@@ -6,6 +6,7 @@
     brandingOptions = import ./branding-options.nix {inherit lib;};
     encodingOptions = import ./encoding-options.nix {inherit lib;};
     library = import ./library.nix {inherit lib;};
+    network = import ./network.nix {inherit lib;};
     plugins = import ./plugins.nix {inherit lib;};
     startup = import ./startup.nix {inherit lib;};
     system = import ./system.nix {inherit lib;};
@@ -42,6 +43,11 @@
         default = null;
         description = "Branding options configuration.";
       };
+      network = mkOption {
+        type = nullOr subTypes.network.networkConfigType;
+        default = null;
+        description = "Network configuration.";
+      };
       users = mkOption {
         type = nullOr subTypes.users.usersConfigType;
         default = null;
@@ -77,6 +83,9 @@
       }
       // optionalAttrs (cfg.branding != null) {
         branding = subTypes.brandingOptions.mkBrandingOptionsConfig cfg.branding;
+      }
+      // optionalAttrs (cfg.network != null) {
+        network = subTypes.network.mkNetworkConfig cfg.network;
       }
       // optionalAttrs (cfg.users != null) {
         users = subTypes.users.mkUsersConfig cfg.users;

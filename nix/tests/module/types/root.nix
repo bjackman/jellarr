@@ -14,6 +14,7 @@
     encoding = null;
     library = null;
     branding = null;
+    network = null;
     users = null;
     plugins = null;
     startup = null;
@@ -45,6 +46,10 @@
     loginDisclaimer = null;
     customCss = null;
     splashscreenEnabled = null;
+  };
+
+  nullNetworkConfig = {
+    knownProxies = null;
   };
 
   nullStartupConfig = {completeStartupWizard = null;};
@@ -186,6 +191,40 @@ in [
   })
 
   (assertEq "without branding section" (mkConfig (nullConfig // {system = nullSystemConfig;})) {
+    version = 1;
+    base_url = "http://10.0.0.76:8096";
+    system = {};
+  })
+
+  (assertEq "with network section" (mkConfig (nullConfig
+    // {
+      system = nullSystemConfig;
+      network =
+        nullNetworkConfig
+        // {
+          knownProxies = ["127.0.0.1" "10.0.0.1"];
+        };
+    })) {
+    version = 1;
+    base_url = "http://10.0.0.76:8096";
+    system = {};
+    network = {
+      knownProxies = ["127.0.0.1" "10.0.0.1"];
+    };
+  })
+
+  (assertEq "empty network section" (mkConfig (nullConfig
+    // {
+      system = nullSystemConfig;
+      network = nullNetworkConfig;
+    })) {
+    version = 1;
+    base_url = "http://10.0.0.76:8096";
+    system = {};
+    network = {};
+  })
+
+  (assertEq "without network section" (mkConfig (nullConfig // {system = nullSystemConfig;})) {
     version = 1;
     base_url = "http://10.0.0.76:8096";
     system = {};
@@ -405,6 +444,11 @@ in [
           loginDisclaimer = "Welcome to our media server";
           customCss = "body { font-family: Arial; }";
         };
+      network =
+        nullNetworkConfig
+        // {
+          knownProxies = ["1.1.1.1"];
+        };
       users = [
         {
           name = "admin";
@@ -453,6 +497,9 @@ in [
       branding = {
         loginDisclaimer = "Welcome to our media server";
         customCss = "body { font-family: Arial; }";
+      };
+      network = {
+        knownProxies = ["1.1.1.1"];
       };
       users = [
         {
