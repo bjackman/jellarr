@@ -17,6 +17,7 @@ import type {
 } from "../../src/types/schema/library";
 import type { EncodingOptionsSchema } from "../../src/types/schema/encoding-options";
 import type { BrandingOptionsDtoSchema } from "../../src/types/schema/branding-options";
+import type { NetworkConfigurationSchema } from "../../src/types/schema/network";
 import type {
   UserDtoSchema,
   CreateUserByNameSchema,
@@ -500,6 +501,101 @@ describe("api/jf Branding façade", () => {
     await expect(
       jellyfinClient.updateBrandingConfiguration({}),
     ).rejects.toThrow(/POST \/System\/Configuration\/Branding failed/i);
+  });
+});
+
+describe("api/jf Network façade", () => {
+  beforeEach((): void => {
+    vi.restoreAllMocks();
+    vi.clearAllMocks();
+  });
+
+  afterEach((): void => {
+    vi.restoreAllMocks();
+  });
+
+  it("when GET /System/Configuration/network returns JSON then it returns the parsed object", async (): Promise<void> => {
+    // Arrange
+    const payload: NetworkConfigurationSchema = {
+      KnownProxies: ["1.2.3.4"],
+    } as NetworkConfigurationSchema;
+    mockFetchJson(payload);
+
+    // Act
+    const jellyfinClient: JellyfinClient = createJellyfinClient(
+      baseUrl,
+      apiKey,
+    );
+    const out: NetworkConfigurationSchema =
+      await jellyfinClient.getNetworkConfiguration();
+
+    // Assert
+    expect(out).toEqual(payload);
+
+    const req: Request = getLastRequest();
+    expect(req.method).toBe("GET");
+    expect(req.url).toMatch(/\/System\/Configuration\/network$/);
+    expect(req.headers.get("X-Emby-Token")).toBe(apiKey);
+  });
+
+  it("when POST /System/Configuration/network succeeds then it sends JSON body and resolves", async (): Promise<void> => {
+    // Arrange
+    mockFetchJson({});
+
+    // Act
+    const jellyfinClient: JellyfinClient = createJellyfinClient(
+      baseUrl,
+      apiKey,
+    );
+    await jellyfinClient.updateNetworkConfiguration({
+      KnownProxies: ["1.2.3.4"],
+    });
+
+    // Assert
+    const req: Request = getLastRequest();
+    expect(req.method).toBe("POST");
+    expect(req.url).toMatch(/\/System\/Configuration\/network$/);
+    expect(req.headers.get("content-type")).toBe("application/json");
+    expect(req.headers.get("X-Emby-Token")).toBe(apiKey);
+
+    const bodyText: string = await req.text();
+    expect(bodyText).toContain("KnownProxies");
+  });
+
+  it("when GET /System/Configuration/network fails then it throws an error with status", async (): Promise<void> => {
+    // Arrange
+    fetchMock = vi
+      .spyOn(global, "fetch")
+      .mockResolvedValue(new Response("boom", { status: 500 }));
+
+    // Act
+    const jellyfinClient: JellyfinClient = createJellyfinClient(
+      baseUrl,
+      apiKey,
+    );
+
+    // Assert
+    await expect(jellyfinClient.getNetworkConfiguration()).rejects.toThrow(
+      /GET \/System\/Configuration\/network failed/i,
+    );
+  });
+
+  it("when POST /System/Configuration/network fails then it throws an error with status", async (): Promise<void> => {
+    // Arrange
+    fetchMock = vi
+      .spyOn(global, "fetch")
+      .mockResolvedValue(new Response("boom", { status: 400 }));
+
+    // Act
+    const jellyfinClient: JellyfinClient = createJellyfinClient(
+      baseUrl,
+      apiKey,
+    );
+
+    // Assert
+    await expect(
+      jellyfinClient.updateNetworkConfiguration({}),
+    ).rejects.toThrow(/POST \/System\/Configuration\/network failed/i);
   });
 });
 

@@ -5,7 +5,8 @@ import type {
   AddVirtualFolderDtoSchema,
   CollectionTypeSchema,
 } from "../types/schema/library";
-import type { BrandingOptionsDtoSchema } from "../types/schema/branding-options";
+import { type BrandingOptionsDtoSchema } from "../types/schema/branding-options";
+import { type NetworkConfigurationSchema } from "../types/schema/network";
 import type {
   UserDtoSchema,
   CreateUserByNameSchema,
@@ -21,6 +22,8 @@ import type {
   PostVirtualFolderResponse,
   GetBrandingConfigurationResponse,
   PostBrandingConfigurationResponse,
+  GetNetworkConfigurationResponse,
+  PostNetworkConfigurationResponse,
   GetUsersResponse,
   PostNewUserResponse,
   PostUserPolicyResponse,
@@ -188,6 +191,50 @@ export function createJellyfinClient(
       if (res.error) {
         throw new Error(
           `POST /System/Configuration/Branding failed: ${res.response.status.toString()}`,
+        );
+      }
+    },
+
+    async getNetworkConfiguration(): Promise<NetworkConfigurationSchema> {
+      const res: GetNetworkConfigurationResponse = await client.GET(
+        "/System/Configuration/{key}",
+        {
+          params: {
+            path: {
+              key: "network",
+            },
+          },
+        },
+      );
+
+      if (res.error) {
+        throw new Error(
+          `GET /System/Configuration/network failed: ${res.response.status.toString()}`,
+        );
+      }
+
+      return res.data as NetworkConfigurationSchema;
+    },
+
+    async updateNetworkConfiguration(
+      body: Partial<NetworkConfigurationSchema>,
+    ): Promise<void> {
+      const res: PostNetworkConfigurationResponse = await client.POST(
+        "/System/Configuration/{key}",
+        {
+          params: {
+            path: {
+              key: "network",
+            },
+          },
+          body,
+          headers: { "content-type": "application/json" },
+        },
+      );
+
+      if (res.error) {
+        throw new Error(
+          `POST /System/Configuration/network failed: ${res.response.status.toString()}`,
         );
       }
     },

@@ -6,6 +6,7 @@ import type {
   CollectionTypeSchema,
 } from "../types/schema/library";
 import type { BrandingOptionsDtoSchema } from "../types/schema/branding-options";
+import type { NetworkConfigurationSchema } from "../types/schema/network";
 import type {
   UserDtoSchema,
   CreateUserByNameSchema,
@@ -31,6 +32,8 @@ export type GetVirtualFoldersResponse = ApiResponse<VirtualFolderInfoSchema[]>;
 export type PostVirtualFolderResponse = ApiResponse<void>;
 export type GetBrandingConfigurationResponse = ApiResponse;
 export type PostBrandingConfigurationResponse = ApiResponse<void>;
+export type GetNetworkConfigurationResponse = ApiResponse;
+export type PostNetworkConfigurationResponse = ApiResponse<void>;
 export type GetUsersResponse = ApiResponse<UserDtoSchema[]>;
 export type PostNewUserResponse = ApiResponse<UserDtoSchema>;
 export type PostUserPolicyResponse = ApiResponse<void>;
@@ -59,6 +62,10 @@ export interface JellyfinClient {
   getBrandingConfiguration(): Promise<BrandingOptionsDtoSchema>;
   updateBrandingConfiguration(
     body: Partial<BrandingOptionsDtoSchema>,
+  ): Promise<void>;
+  getNetworkConfiguration(): Promise<NetworkConfigurationSchema>;
+  updateNetworkConfiguration(
+    body: Partial<NetworkConfigurationSchema>,
   ): Promise<void>;
   getUsers(): Promise<UserDtoSchema[]>;
   createUser(body: CreateUserByNameSchema): Promise<void>;

@@ -3,6 +3,7 @@ import { SystemConfigType } from "./system";
 import { EncodingOptionsConfigType } from "./encoding-options";
 import { LibraryConfigType } from "./library";
 import { BrandingOptionsConfigType } from "./branding-options";
+import { NetworkConfigType } from "./network";
 import { UserConfigListType } from "./users";
 import { StartupConfigType } from "./startup";
 import { PluginConfigListType } from "./plugins";
@@ -14,6 +15,7 @@ export const RootConfigType: z.ZodObject<{
   encoding: z.ZodOptional<typeof EncodingOptionsConfigType>;
   library: z.ZodOptional<typeof LibraryConfigType>;
   branding: z.ZodOptional<typeof BrandingOptionsConfigType>;
+  network: z.ZodOptional<typeof NetworkConfigType>;
   users: z.ZodOptional<typeof UserConfigListType>;
   plugins: z.ZodOptional<typeof PluginConfigListType>;
   startup: z.ZodOptional<typeof StartupConfigType>;
@@ -25,6 +27,7 @@ export const RootConfigType: z.ZodObject<{
     encoding: EncodingOptionsConfigType.optional(),
     library: LibraryConfigType.optional(),
     branding: BrandingOptionsConfigType.optional(),
+    network: NetworkConfigType.optional(),
     users: UserConfigListType.optional(),
     plugins: PluginConfigListType.optional(),
     startup: StartupConfigType.optional(),

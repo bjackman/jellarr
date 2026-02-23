@@ -11,6 +11,10 @@ import {
   applyBrandingOptions,
 } from "../apply/branding-options";
 import {
+  calculateNetworkDiff,
+  applyNetworkConfig,
+} from "../apply/network";
+import {
   calculateNewUsersDiff,
   calculateUserPoliciesDiff,
   applyUserPolicies,
@@ -20,6 +24,7 @@ import type { VirtualFolderInfoSchema } from "../types/schema/library";
 import { type ServerConfigurationSchema } from "../types/schema/system";
 import { type EncodingOptionsSchema } from "../types/schema/encoding-options";
 import { type BrandingOptionsDtoSchema } from "../types/schema/branding-options";
+import { type NetworkConfigurationSchema } from "../types/schema/network";
 import type { UserDtoSchema, UserPolicySchema } from "../types/schema/users";
 import type { UserConfig } from "../types/config/users";
 import { createJellyfinClient } from "../api/jellyfin_client";
@@ -123,6 +128,22 @@ export async function runPipeline(path: string): Promise<void> {
       console.log("✓ updated branding config");
     } else {
       console.log("✓ branding config already up to date");
+    }
+  }
+
+  if (cfg.network) {
+    const currentNetworkSchema: NetworkConfigurationSchema =
+      await jellyfinClient.getNetworkConfiguration();
+
+    const updatedNetworkSchema: NetworkConfigurationSchema | undefined =
+      calculateNetworkDiff(currentNetworkSchema, cfg.network);
+
+    if (updatedNetworkSchema) {
+      console.log("→ updating network config");
+      await applyNetworkConfig(jellyfinClient, updatedNetworkSchema);
+      console.log("✓ updated network config");
+    } else {
+      console.log("✓ network config already up to date");
     }
   }
 
